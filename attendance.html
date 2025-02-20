@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scan Attendance</title>
+    <link rel="icon" href="https://raw.githubusercontent.com/PisethPT/attendance/refs/heads/main/attendance/logoIu.png">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jsqr/dist/jsQR.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css" rel="stylesheet">
+
+    <style>
+        button h5 {
+            font-family: 'Khmer OS Battambang', 'Battambang'
+        }
+
+        #scan-block{
+            display: none;
+        }
+
+        .iframe {
+            display: flex;
+            position: relative;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: 300px;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        video, canvas {
+            width: 100%;
+        }
+
+        #scanner-btn {
+            display: flex;
+            justify-content: center;
+            background-color: #1f3a93bd;
+            align-self: center;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            outline: none;
+            border: none;
+        }
+
+        .btn-sm{
+            float:right;
+            color: #fff;
+            border-color: #1861ac;
+            background-color: #1b6ec2;
+            padding: .25rem .5rem;
+            border-radius: .2rem;
+            line-height: 1.5;
+            font-size: .875rem;
+            font-family: 'Khmer OS Battambang', 'Battambang';
+        }
+
+        .contain{
+            display: flex;
+            height: 60vh;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="sticky-top shadow-lg rounded " style="background-color: #1f3a93">
+            <div class="d-flex justify-content-center mt-4">
+                <div class="row">
+                    <div class="col-9">
+                        <img src="https://raw.githubusercontent.com/PisethPT/attendance/refs/heads/main/attendance/logo.png" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class=" bg-light shadow-lg p-3 mb-5 bg-white rounded">
+            <div class="row">
+                <div class="col-12">
+                    <a href="*" class="btn-sm">ត្រឡប់ក្រោយ</a>
+                </div>
+            </div>
+            <div class="d-flex justify-content-center ">
+                <div class="row">
+                    <div class="col-12">
+                        <p class="text-danger mt-3" style="font-size: 24px; font-family: 'Khmer OS Muol Light', 'Battambang' !important;">ស្គេនវត្តមាន</p>
+                    </div>
+                </div>
+            </div>
+            <div style="display: flex; flex-direction: column; justify-content:center; margin-bottom: 20px;">
+                <div style="display: flex; flex-direction: column; justify-content:center; margin-bottom: 20px;">
+                    <div id="display"></div>
+                        <!-- Scan attendance -->
+                        <div class="contain">
+                            <div id="scan-block">
+                                <div class="iframe">
+                                    <video id="video-scan" autoplay></video>
+                                </div>
+                            </div>
+
+                            <button id="scanner-btn">
+                                <i style="font-size: 23px; align-self: center; color: white;" class="fa fa-square" aria-hidden="true"></i>
+                            </button>
+                        </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const videoElement = document.getElementById('video-scan');
+        let currentStream = null;
+        let startScan = document.getElementById('scanner-btn');
+        let scanBlock = document.getElementById('scan-block');
+
+        startScan.addEventListener('click', function(){
+            scanBlock.style.display = 'inline';
+            startScan.style.display = 'none';
+            startCamera();
+        });
+
+        // Function to start the camera
+        function startCamera() {
+            if (currentStream) {
+                currentStream.getTracks().forEach(track => track.stop());
+            }
+            navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
+                .then((stream) => {
+                    currentStream = stream;
+                    videoElement.srcObject = stream;
+                    videoElement.setAttribute('playsinline', true); // Required for iOS
+                    videoElement.play()
+                        .then(() => {
+                            scanQRCode(); // Start scanning after the video starts playing
+                        })
+                        .catch((err) => {
+                            console.error('Error playing video:', err);
+                        });
+                })
+                .catch((err) => {
+                    console.error('Error accessing camera:', err);
+                    if (err.name === 'NotAllowedError') {
+                        alert('Please allow access to the camera and close any overlays or bubbles from other apps.');
+                    } else if (err.name === 'NotFoundError') {
+                        alert('No camera found. Please ensure your device has a camera.');
+                    } else {
+                        alert('Error accessing the camera. Please try again.');
+                    }
+                });
+        }
+
+        // Function to stop the camera
+        function stopCamera() {
+            if (currentStream) {
+                currentStream.getTracks().forEach(track => track.stop());
+                currentStream = null;
+                videoElement.srcObject = null;
+                scanBlock.style.display = 'none';
+                startScan.style.display = 'inline';
+            }
+        }
+
+        // Function to capture the video frame and scan for QR codes
+        function scanQRCode() {
+            const canvasElement = document.createElement('canvas');
+            const context = canvasElement.getContext('2d');
+        
+            canvasElement.width = videoElement.videoWidth;
+            canvasElement.height = videoElement.videoHeight;
+        
+            context.drawImage(videoElement, 0, 0, canvasElement.width, canvasElement.height);
+        
+            const imageData = context.getImageData(0, 0, canvasElement.width, canvasElement.height);
+            const qrCode = jsQR(imageData.data, canvasElement.width, canvasElement.height);
+        
+            if (qrCode) {
+                console.log('QR Code detected:', qrCode.data);
+                alert(`QR Code detected: ${qrCode.data}`);
+                stopCamera(); // Stop the camera after detecting a QR code
+                Geolocation();
+            } else {
+                // Continue scanning if no QR code is detected
+                if (!videoElement.paused) {
+                    requestAnimationFrame(scanQRCode);
+                }
+            }
+        }
+
+        function Geolocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(showPosition, showError, {
+                    enableHighAccuracy: true,
+                    timeout: 5000,
+                    maximumAge: 0
+                });
+            } else {
+                alert("Geolocation is not supported by this browser.");
+            }
+
+            function showPosition(position) {
+                const data = {
+                    latitude: position.coords.latitude,
+                    longitude: position.coords.longitude,
+                    accuracy: position.coords.accuracy
+                };
+
+                document.getElementById('display').innerText = `Latitude: ${data.latitude}, Longitude: ${data.longitude}, Accuracy: ${data.accuracy}`;
+
+                // Send data to the parent page
+                window.parent.postMessage({ dataSource: JSON.stringify(data) }, '*');
+            }
+
+            function showError(error) {
+                switch (error.code) {
+                    case error.PERMISSION_DENIED:
+                        alert("User denied the request for Geolocation.");
+                        break;
+                    case error.POSITION_UNAVAILABLE:
+                        alert("Location information is unavailable.");
+                        break;
+                    case error.TIMEOUT:
+                        alert("The request to get user location timed out.");
+                        break;
+                    case error.UNKNOWN_ERROR:
+                        alert("An unknown error occurred.");
+                        break;
+                }
+            }
+        }
+
+        // Listen for messages from the parent page
+        window.addEventListener('message', (event) => {
+            if (event.data && event.data.action === 'requestData') {
+                // Send data back to the parent page
+                Geolocation();
+            }
+        });
+    </script>
+
+</body>
+</html>
