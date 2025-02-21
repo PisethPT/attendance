@@ -40,7 +40,7 @@
         }
 
         #scanner-btn {
-            display: none;
+            display: flex;
             justify-content: center;
             background-color: #1f3a93bd;
             align-self: center;
@@ -127,10 +127,6 @@
         let currentStream = null;
         let startScan = document.getElementById('scanner-btn');
         let scanBlock = document.getElementById('scan-block');
-        $.(document).ready(function()
-        {
-            startCamera();                
-        })
         
         startScan.addEventListener('click', function () {
             scanBlock.style.display = 'inline';
