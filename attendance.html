@@ -14,25 +14,6 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css" rel="stylesheet">
     <title>Scan Attendance</title>
 
-    <script>
-        function getQueryParam(name) {
-            var urlParams = new URLSearchParams(window.location.search);
-            return urlParams.get(name);
-        }
-        var studentValue = getQueryParam('student');
-
-        // If user is not authenticated, redirect to login page
-        if (!window.atob(studentValue).includes("/")) {
-            window.location.href = 'http://192.168.2.210:100/Menu';
-        }
-        else if (!studentValue || window.atob(studentValue).split("/")[1] !== 'iu.kh.com') {
-            window.location.href = 'http://192.168.2.210:100/Menu';
-        }
-
-        const studentid = window.atob(studentValue).replace("/iu.kh.com", "");
-        console.log(studentid);
-    </script>
-
     <style>
         button h5 {
             font-family: 'Khmer OS Battambang', 'Battambang'
@@ -146,6 +127,10 @@
 
 $(document).ready(function() {
   setTimeout(function() {
+    let startScan = document.getElementById('scanner-btn');
+    let scanBlock = document.getElementById('scan-block');
+    scanBlock.style.display = 'inline';
+    startScan.style.display = 'none';
     startCamera();
   }, 3000); // 2000 milliseconds = 2 seconds
 
