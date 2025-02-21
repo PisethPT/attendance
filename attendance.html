@@ -31,7 +31,6 @@
 
         const studentid = window.atob(studentValue).replace("/iu.kh.com", "");
         console.log(studentid);
-
     </script>
 
     <style>
@@ -96,7 +95,6 @@
 </head>
 
 <body>
-
     <a href="http://192.168.2.210:100/Menu">
         <div class="container">
             <div class="sticky-top shadow-lg rounded " style="background-color: #1f3a93">
@@ -145,10 +143,6 @@
             </div>
         </div>
     </a>
-
-
-   
-
 
     <script>
         const videoElement = document.getElementById('video-scan');
@@ -229,7 +223,7 @@
             }
         }
 
-        function Geolocation(url) {
+        function Geolocation(id) {
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(showPosition, showError, {
                     enableHighAccuracy: true,
@@ -237,30 +231,23 @@
                     maximumAge: 0
                 });
             } else {
-                alert("Geolocation is not supported by this browser.");
+                console.log("Geolocation is not supported by this browser.");
             }
 
             function showPosition(position) {
-
                 const data = {
                     latitude: position.coords.latitude,
                     longitude: position.coords.longitude,
                     accuracy: position.coords.accuracy
                 };
-
-                document.getElementById('display').innerText = `Latitude: ${data.latitude}, Longitude: ${data.longitude}, Accuracy: ${data.accuracy}`;
-
-
-               
-
-
+                //document.getElementById('display').innerText = `Latitude: ${data.latitude}, Longitude: ${data.longitude}, Accuracy: ${data.accuracy}`;
                 $.ajax({
-                    url: 'https://7m8r0kj7-44364.inc1.devtunnels.ms/Location/CheckingAttendance?id=4',
+                    url: 'https://7m8r0kj7-44364.inc1.devtunnels.ms/Location/CheckingAttendance?locid=' + id ,
                     type: "POST",
                     contentType: "application/json",
                     data: JSON.stringify({
-                        StudentId: '122345',
-                        GroupId: "MD1098",
+                        StudentId: studentid,
+                        GroupId: "",
                         Latitude: data.latitude,
                         Longitude: data.longitude
                     }),
@@ -268,14 +255,10 @@
                         alert(`status: ${response.statusCode}, success: ${response.success}, message: ${response.message}`);
                     },
                     error: function (error) {
-                        alert("Error: " + JSON.stringify(error));
-                        alert("An error occurred while sending location data to the server.");
+                        console.log("Error: " + JSON.stringify(error));
+                        console.log("An error occurred while sending location data to the server.");
                     }
                 });
-
-                window.sessionStorage('model', data);
-                // Send data to the parent page
-                window.parent.postMessage({ dataSource: JSON.stringify(data) }, '*');
             }
 
             function showError(error) {
@@ -295,9 +278,7 @@
                 }
             }
         }
-
     </script>
-
 </body>
 
 </html>
