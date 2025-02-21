@@ -252,12 +252,12 @@
                         }),
                         success: function (response) {
                             alert(`status: ${response.statusCode}, success: ${response.success}, message: ${response.message}`);
-                            if(response.statusCode !== '200'){
-                                startScan.disabled = false;
-                                startScan.style.backgroundColor = '#1f3a93bd';
+                            if(response.statusCode === 200){
+                                window.location.href = 'http://192.168.2.210:100/Menu';
                             }
                             else{
-                                window.location.href = 'http://192.168.2.210:100/Menu';
+                                startScan.disabled = false;
+                                startScan.style.backgroundColor = '#1f3a93bd';
                             }
                         },
                         error: function (error) {
