@@ -249,7 +249,12 @@
                 };
 
                 document.getElementById('display').innerText = `Latitude: ${data.latitude}, Longitude: ${data.longitude}, Accuracy: ${data.accuracy}`;
-                alert("aa");
+
+
+                alert(data.latitude);
+                alert(data.longitude);
+
+
                 $.ajax({
                     url: 'https://7m8r0kj7-44364.inc1.devtunnels.ms/Location/CheckingAttendance?id=4',
                     type: "POST",
