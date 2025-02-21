@@ -33,7 +33,6 @@
         console.log(studentid);
     </script>
 
-    
     <style>
         button h5 {
             font-family: 'Khmer OS Battambang', 'Battambang'
@@ -123,7 +122,7 @@
                         </div>
                     </div>
                 </div>
-                 <div style="display: flex; flex-direction: column; justify-content:center; margin-bottom: 20px;">
+                    <div style="display: flex; flex-direction: column; justify-content:center; margin-bottom: 20px;">
                         <div id="display"></div>
                         <!-- Scan attendance -->
                         <div class="contain">
@@ -144,11 +143,18 @@
     </a>
 
     <script>
-        const videoElement = document.getElementById('video-scan');
+
+$(document).ready(function() {
+  setTimeout(function() {
+    startCamera();
+  }, 3000); // 2000 milliseconds = 2 seconds
+
+
+  const videoElement = document.getElementById('video-scan');
         let currentStream = null;
         let startScan = document.getElementById('scanner-btn');
         let scanBlock = document.getElementById('scan-block');
-        
+
         startScan.addEventListener('click', function () {
             scanBlock.style.display = 'inline';
             startScan.style.display = 'none';
@@ -211,6 +217,7 @@
 
             if (qrCode) {
                 console.log('QR Code detected:', qrCode.data);
+                console.log(`QR Code detected: ${qrCode.data}`);
                 stopCamera(); // Stop the camera after detecting a QR code
                 Geolocation(qrCode.data);
             } else {
@@ -276,6 +283,11 @@
                 }
             }
         }
+
+});
+
+
+        
     </script>
 </body>
 
