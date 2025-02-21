@@ -122,176 +122,169 @@
                         </div>
                     </div>
                 </div>
-                    <div style="display: flex; flex-direction: column; justify-content:center; margin-bottom: 20px;">
-                        <div id="display"></div>
-                        <!-- Scan attendance -->
-                        <div class="contain">
-                            <div id="scan-block">
-                                <div class="iframe">
-                                    <video id="video-scan" autoplay></video>
-                                </div>
+                <div style="display: flex; flex-direction: column; justify-content:center; margin-bottom: 20px;">
+                    <div id="display"></div>
+                    <!-- Scan attendance -->
+                    <div class="contain">
+                        <div id="scan-block">
+                            <div class="iframe">
+                                <video id="video-scan" autoplay></video>
                             </div>
-
-                            <button id="scanner-btn">
-                                <i style="font-size: 23px; align-self: center; color: white;" class="fa fa-square"
-                                    aria-hidden="true"></i>
-                            </button>
                         </div>
+
+                        <button id="scanner-btn">
+                            <i style="font-size: 23px; align-self: center; color: white;" class="fa fa-square"
+                                aria-hidden="true"></i>
+                        </button>
                     </div>
+                </div>
             </div>
         </div>
     </a>
 
     <script>
+        $(document).ready(function () {
+            const videoElement = document.getElementById('video-scan');
+            let currentStream = null;
+            let startScan = document.getElementById('scanner-btn');
+            let scanBlock = document.getElementById('scan-block');
+            startScan.addEventListener('click', function () {
+                scanBlock.style.display = 'inline';
+                startScan.style.display = 'none';
+                startCamera();
+            });
 
-$(document).ready(function() {
- 
+            // Function to start the camera
+            function startCamera() {
+                if (currentStream) {
+                    currentStream.getTracks().forEach(track => track.stop());
+                }
+                navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
+                    .then((stream) => {
+                        currentStream = stream;
+                        videoElement.srcObject = stream;
+                        videoElement.setAttribute('playsinline', true); // Required for iOS
+                        videoElement.play()
+                            .then(() => {
+                                scanQRCode(); // Start scanning after the video starts playing
+                            })
+                            .catch((err) => {
+                                console.error('Error playing video:', err);
+                            });
+                    })
+                    .catch((err) => {
+                        console.error('Error accessing camera:', err);
+                        if (err.name === 'NotAllowedError') {
+                            alert('Please allow access to the camera and close any overlays or bubbles from other apps.');
+                        } else if (err.name === 'NotFoundError') {
+                            alert('No camera found. Please ensure your device has a camera.');
+                        } else {
+                            alert('Error accessing the camera. Please try again.');
+                        }
+                    });
+            }
 
+            // Function to stop the camera
+            function stopCamera() {
+                if (currentStream) {
+                    currentStream.getTracks().forEach(track => track.stop());
+                    currentStream = null;
+                    videoElement.srcObject = null;
+                    scanBlock.style.display = 'none';
+                    startScan.style.display = 'inline';
+                    startScan.disabled = true;
+                    startScan.style.backgroundColor = 'gray';
+                }
+            }
 
-  const videoElement = document.getElementById('video-scan');
-        let currentStream = null;
-        let startScan = document.getElementById('scanner-btn');
-        let scanBlock = document.getElementById('scan-block');
- 
-   
+            // Function to capture the video frame and scan for QR codes
+            function scanQRCode() {
+                const canvasElement = document.createElement('canvas');
+                const context = canvasElement.getContext('2d');
 
-        startScan.addEventListener('click', function () {
-            scanBlock.style.display = 'inline';
-            startScan.style.display = 'none';
-            startCamera();
+                canvasElement.width = videoElement.videoWidth;
+                canvasElement.height = videoElement.videoHeight;
 
-            alert('OK');
+                context.drawImage(videoElement, 0, 0, canvasElement.width, canvasElement.height);
 
+                const imageData = context.getImageData(0, 0, canvasElement.width, canvasElement.height);
+                const qrCode = jsQR(imageData.data, canvasElement.width, canvasElement.height);
+
+                if (qrCode) {
+                    console.log('QR Code detected:', qrCode.data);
+                    stopCamera(); // Stop the camera after detecting a QR code
+                    Geolocation(qrCode.data);
+                } else {
+                    // Continue scanning if no QR code is detected
+                    if (!videoElement.paused) {
+                        requestAnimationFrame(scanQRCode);
+                    }
+                }
+            }
+
+            function Geolocation(id) {
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(showPosition, showError, {
+                        enableHighAccuracy: true,
+                        timeout: 5000,
+                        maximumAge: 0
+                    });
+                } else {
+                    console.log("Geolocation is not supported by this browser.");
+                }
+
+                function showPosition(position) {
+                    const data = {
+                        latitude: position.coords.latitude,
+                        longitude: position.coords.longitude,
+                        accuracy: position.coords.accuracy
+                    };
+
+                    $.ajax({
+                        url: 'https://7m8r0kj7-44364.inc1.devtunnels.ms/Location/CheckingAttendance?locid=' + id,
+                        type: "POST",
+                        contentType: "application/json",
+                        data: JSON.stringify({
+                            StudentId: studentid,
+                            GroupId: "",
+                            Latitude: data.latitude,
+                            Longitude: data.longitude
+                        }),
+                        success: function (response) {
+                            alert(`status: ${response.statusCode}, success: ${response.success}, message: ${response.message}`);
+                            if(response.statusCode !== '200'){
+                                startScan.disabled = false;
+                                startScan.style.backgroundColor = '#1f3a93bd';
+                            }
+                            else{
+                                window.location.href = 'http://192.168.2.210:100/Menu';
+                            }
+                        },
+                        error: function (error) {
+                            console.log("Error: " + JSON.stringify(error));
+                            console.log("An error occurred while sending location data to the server.");
+                        }
+                    });
+                }
+
+                function showError(error) {
+                    switch (error.code) {
+                        case error.PERMISSION_DENIED:
+                            alert("User denied the request for Geolocation.");
+                            break;
+                        case error.POSITION_UNAVAILABLE:
+                            alert("Location information is unavailable.");
+                            break;
+                        case error.TIMEOUT:
+                            alert("The request to get user location timed out.");
+                            break;
+                        case error.UNKNOWN_ERROR:
+                            alert("An unknown error occurred.");
+                            break;
+                    }
+                }
+            }
         });
-
-        // Function to start the camera
-        function startCamera() {
-            // if (currentStream) {
-
-            //     currentStream.getTracks().forEach(track => track.stop());
-            // }
-            navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
-                .then((stream) => {
-                    currentStream = stream;
-                    videoElement.srcObject = stream;
-                    videoElement.setAttribute('playsinline', true); // Required for iOS
-                    videoElement.play()
-                        .then(() => {
-                            scanQRCode(); // Start scanning after the video starts playing
-                        })
-                        .catch((err) => {
-                            console.error('Error playing video:', err);
-                        });
-                })
-                .catch((err) => {
-                    console.error('Error accessing camera:', err);
-                    if (err.name === 'NotAllowedError') {
-                        alert('Please allow access to the camera and close any overlays or bubbles from other apps.');
-                    } else if (err.name === 'NotFoundError') {
-                        alert('No camera found. Please ensure your device has a camera.');
-                    } else {
-                        alert('Error accessing the camera. Please try again.');
-                    }
-                });
-        }
-
-        // Function to stop the camera
-        function stopCamera() {
-            if (currentStream) {
-                currentStream.getTracks().forEach(track => track.stop());
-                currentStream = null;
-                videoElement.srcObject = null;
-                scanBlock.style.display = 'none';
-                startScan.style.display = 'inline';
-            }
-        }
-
-        // Function to capture the video frame and scan for QR codes
-        function scanQRCode() {
-            const canvasElement = document.createElement('canvas');
-            const context = canvasElement.getContext('2d');
-
-            canvasElement.width = videoElement.videoWidth;
-            canvasElement.height = videoElement.videoHeight;
-
-            context.drawImage(videoElement, 0, 0, canvasElement.width, canvasElement.height);
-
-            const imageData = context.getImageData(0, 0, canvasElement.width, canvasElement.height);
-            const qrCode = jsQR(imageData.data, canvasElement.width, canvasElement.height);
-
-            if (qrCode) {
-                console.log('QR Code detected:', qrCode.data);
-                console.log(`QR Code detected: ${qrCode.data}`);
-                stopCamera(); // Stop the camera after detecting a QR code
-                Geolocation(qrCode.data);
-            } else {
-                // Continue scanning if no QR code is detected
-                if (!videoElement.paused) {
-                    requestAnimationFrame(scanQRCode);
-                }
-            }
-        }
-
-        function Geolocation(id) {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(showPosition, showError, {
-                    enableHighAccuracy: true,
-                    timeout: 5000,
-                    maximumAge: 0
-                });
-            } else {
-                console.log("Geolocation is not supported by this browser.");
-            }
-
-            function showPosition(position) {
-                const data = {
-                    latitude: position.coords.latitude,
-                    longitude: position.coords.longitude,
-                    accuracy: position.coords.accuracy
-                };
-                //document.getElementById('display').innerText = `Latitude: ${data.latitude}, Longitude: ${data.longitude}, Accuracy: ${data.accuracy}`;
-                $.ajax({
-                    url: 'https://7m8r0kj7-44364.inc1.devtunnels.ms/Location/CheckingAttendance?locid=' + id ,
-                    type: "POST",
-                    contentType: "application/json",
-                    data: JSON.stringify({
-                        StudentId: studentid,
-                        GroupId: "",
-                        Latitude: data.latitude,
-                        Longitude: data.longitude
-                    }),
-                    success: function (response) {
-                        alert(`status: ${response.statusCode}, success: ${response.success}, message: ${response.message}`);
-                    },
-                    error: function (error) {
-                        console.log("Error: " + JSON.stringify(error));
-                        console.log("An error occurred while sending location data to the server.");
-                    }
-                });
-            }
-
-            function showError(error) {
-                switch (error.code) {
-                    case error.PERMISSION_DENIED:
-                        alert("User denied the request for Geolocation.");
-                        break;
-                    case error.POSITION_UNAVAILABLE:
-                        alert("Location information is unavailable.");
-                        break;
-                    case error.TIMEOUT:
-                        alert("The request to get user location timed out.");
-                        break;
-                    case error.UNKNOWN_ERROR:
-                        alert("An unknown error occurred.");
-                        break;
-                }
-            }
-        }
-
-});
-
-
-        
     </script>
 </body>
 
