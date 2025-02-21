@@ -25,9 +25,9 @@
         if (!studentValue || window.atob(studentValue).split("/")[1] !== 'iu.kh.com') {
             window.location.href = 'http://192.168.2.210:100/Menu';
         }
-        const studentid = window.atob(studentValue);
+        
+        const studentid = window.atob(studentValue).replace("/iu.kh.com", "");
         console.log(studentid);
-        console.log(studentid.replace("/iu.kh.com", ""));
 
         // Wait for the DOM to load before performing any actions
         document.addEventListener('DOMContentLoaded', function () {
@@ -217,7 +217,7 @@
                 console.log('QR Code detected:', qrCode.data);
                 alert(`QR Code detected: ${qrCode.data}`);
                 stopCamera(); // Stop the camera after detecting a QR code
-                Geolocation();
+                Geolocation(qrCode.data);
             } else {
                 // Continue scanning if no QR code is detected
                 if (!videoElement.paused) {
@@ -226,7 +226,7 @@
             }
         }
 
-        function Geolocation() {
+         function Geolocation(url) {
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(showPosition, showError, {
                     enableHighAccuracy: true,
@@ -245,6 +245,26 @@
                 };
 
                 document.getElementById('display').innerText = `Latitude: ${data.latitude}, Longitude: ${data.longitude}, Accuracy: ${data.accuracy}`;
+
+                $.ajax({
+                    url: url,
+                    type: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify({
+                        StudentId: studentid,
+                        GroupId: "MD1098",
+                        Latitude: latitude,
+                        Longitude: longitude
+                    }),
+                    success: function (response) {
+                        alert(`status: ${response.statusCode}, success: ${response.success}, message: ${response.message}`);
+                    },
+                    error: function (error) {
+                        alert("Error: " + JSON.stringify(error));
+                        alert("An error occurred while sending location data to the server.");
+                    }
+                });
+
                 window.sessionStorage('model', data);
                 // Send data to the parent page
                 window.parent.postMessage({ dataSource: JSON.stringify(data) }, '*');
