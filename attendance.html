@@ -39,7 +39,7 @@
         }
 
         #scan-block {
-            display: none;
+            display: inline;
         }
 
         .iframe {
@@ -60,7 +60,7 @@
         }
 
         #scanner-btn {
-            display: flex;
+            display: none;
             justify-content: center;
             background-color: #1f3a93bd;
             align-self: center;
@@ -149,7 +149,7 @@
         let currentStream = null;
         let startScan = document.getElementById('scanner-btn');
         let scanBlock = document.getElementById('scan-block');
-
+        startCamera();
         startScan.addEventListener('click', function () {
             scanBlock.style.display = 'inline';
             startScan.style.display = 'none';
