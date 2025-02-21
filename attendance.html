@@ -20,11 +20,13 @@
             return urlParams.get(name); 
         }
 
-        var studentValue = getQueryParam('student');
+       var studentValue = getQueryParam('student');
         // If user is not authenticated, redirect to login page
-        if (!studentValue || studentValue.replace('/iu.kh.com') !== "" || studentValue.replace('/iu.kh.com') !== null) {
+        if (!studentValue || window.atob(studentValue).split("/")[1] !== 'iu.kh.com') {
             window.location.href = 'http://192.168.2.210:100/Menu';
         }
+        const studentid = window.atob(studentValue);
+        console.log(studentid.replace("/iu.kh.com", ""));
 
         // Wait for the DOM to load before performing any actions
         document.addEventListener('DOMContentLoaded', function () {
