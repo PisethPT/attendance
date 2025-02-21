@@ -210,7 +210,6 @@
 
             if (qrCode) {
                 console.log('QR Code detected:', qrCode.data);
-                alert(`QR Code detected: ${qrCode.data}`);
                 stopCamera(); // Stop the camera after detecting a QR code
                 Geolocation(qrCode.data);
             } else {
