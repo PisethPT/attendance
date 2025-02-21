@@ -252,7 +252,6 @@
                         }),
                         success: function (response) {
                             alert(`status: ${response.statusCode}, success: ${response.success}, message: ${response.message}`);
-                            alert(typeof(response.statusCode));
                             if(response.statusCode === 200){
                                 window.location.href = 'http://192.168.2.210:100/Menu';
                             }
