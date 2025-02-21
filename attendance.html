@@ -147,7 +147,11 @@
         let currentStream = null;
         let startScan = document.getElementById('scanner-btn');
         let scanBlock = document.getElementById('scan-block');
-        startCamera();
+        $.(document).ready(function()
+        {
+            startCamera();                
+        })
+        
         startScan.addEventListener('click', function () {
             scanBlock.style.display = 'inline';
             startScan.style.display = 'none';
