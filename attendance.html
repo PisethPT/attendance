@@ -148,6 +148,7 @@ $(document).ready(function() {
   setTimeout(function() {
 
         $('#scanner-btn').click();
+        startCamera();
 
   }, 3000); // 2000 milliseconds = 2 seconds
 
@@ -163,16 +164,17 @@ $(document).ready(function() {
             scanBlock.style.display = 'inline';
             startScan.style.display = 'none';
             startCamera();
-            
+
             alert('OK');
 
         });
 
         // Function to start the camera
         function startCamera() {
-            if (currentStream) {
-                currentStream.getTracks().forEach(track => track.stop());
-            }
+            // if (currentStream) {
+
+            //     currentStream.getTracks().forEach(track => track.stop());
+            // }
             navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
                 .then((stream) => {
                     currentStream = stream;
