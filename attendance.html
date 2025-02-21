@@ -16,23 +16,22 @@
 
     <script>
         function getQueryParam(name) {
-            var urlParams = new URLSearchParams(window.location.search); 
-            return urlParams.get(name); 
+            var urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(name);
         }
+        var studentValue = getQueryParam('student');
 
-       var studentValue = getQueryParam('student');
         // If user is not authenticated, redirect to login page
-        if (!studentValue || window.atob(studentValue).split("/")[1] !== 'iu.kh.com') {
+        if (!window.atob(studentValue).includes("/")) {
             window.location.href = 'http://192.168.2.210:100/Menu';
         }
-        
+        else if (!studentValue || window.atob(studentValue).split("/")[1] !== 'iu.kh.com') {
+            window.location.href = 'http://192.168.2.210:100/Menu';
+        }
+
         const studentid = window.atob(studentValue).replace("/iu.kh.com", "");
         console.log(studentid);
 
-        // Wait for the DOM to load before performing any actions
-        document.addEventListener('DOMContentLoaded', function () {
-            console.log('User is authenticated. Loading page...');
-        });
     </script>
 
     <style>
@@ -147,6 +146,10 @@
         </div>
     </a>
 
+
+   
+
+
     <script>
         const videoElement = document.getElementById('video-scan');
         let currentStream = null;
@@ -226,7 +229,7 @@
             }
         }
 
-         function Geolocation(url) {
+        function Geolocation(url) {
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(showPosition, showError, {
                     enableHighAccuracy: true,
@@ -238,6 +241,7 @@
             }
 
             function showPosition(position) {
+
                 const data = {
                     latitude: position.coords.latitude,
                     longitude: position.coords.longitude,
@@ -251,10 +255,10 @@
                     type: "POST",
                     contentType: "application/json",
                     data: JSON.stringify({
-                        StudentId: '12233',
+                        StudentId: '122345',
                         GroupId: "MD1098",
-                        Latitude: latitude,
-                        Longitude: longitude
+                        Latitude: data.latitude,
+                        Longitude: data.longitude
                     }),
                     success: function (response) {
                         alert(`status: ${response.statusCode}, success: ${response.success}, message: ${response.message}`);
