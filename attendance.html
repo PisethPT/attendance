@@ -245,10 +245,16 @@
                         type: "POST",
                         contentType: "application/json",
                         data: JSON.stringify({
+                            LocationId: 0,
                             StudentId: studentid,
+                            SubjectId: "",
                             GroupId: "",
                             Latitude: data.latitude,
-                            Longitude: data.longitude
+                            Longitude: data.longitude,
+                            Distance: 0.0,
+                            StartCheckInTime: "",
+                            EndCheckInTime: "",
+                            IsValid: false
                         }),
                         success: function (response) {
                             alert(`status: ${response.statusCode}, success: ${response.success}, message: ${response.message}`);
