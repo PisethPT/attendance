@@ -258,11 +258,12 @@
                             else{
                                 startScan.disabled = false;
                                 startScan.style.backgroundColor = '#1f3a93bd';
+                               alert(`status: ${response.statusCode}, success: ${response.success}, message: ${response.message}`);
                             }
                         },
                         error: function (error) {
-                            console.log("Error: " + JSON.stringify(error));
-                            console.log("An error occurred while sending location data to the server.");
+                           alert("Error: " + JSON.stringify(error));
+                            alert("An error occurred while sending location data to the server.");
                         }
                     });
                 }
