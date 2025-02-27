@@ -59,17 +59,32 @@
             width: 100%;
         }
 
+        @keyframes growShrink {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.1);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
         #scanner-btn {
             display: flex;
             justify-content: center;
+            align-items: center;
             background-color: #1f3a93bd;
+            color: #fff;
             align-self: center;
-            width: 50px;
-            height: 50px;
+            width: 70px;
+            height: 70px;
             border-radius: 50%;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             outline: none;
             border: none;
+            animation: growShrink 2s infinite;
         }
 
         .btn-sm {
@@ -112,13 +127,14 @@
 </head>
 
 <body>
+
  <!-- Bootstrap Modal -->
 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
-        <div class="modal-header" style="background: linear-gradient(to right, #1E3A8A, #60A5FA); color: white;">
+        <div class="modal-header" style="background: linear-gradient(to right, #1f3a93, #1f3a93); color: white;">
           <h6 class="modal-title" id="exampleModalLabel">ព័ត៍មានស្គេន</h6>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          <button type="button" class="btn-close bg-light" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body text-center">
           <div>
@@ -130,7 +146,6 @@
       </div>
     </div>
   </div>
-  
 
     <a href="http://192.168.2.210:100/Menu">
         <div class="container">
@@ -138,8 +153,7 @@
                 <div class="d-flex justify-content-center mt-4">
                     <div class="row">
                         <div class="col-9">
-                            <img
-                                src="https://raw.githubusercontent.com/PisethPT/attendance/refs/heads/main/attendance/logo.png" />
+                            <img src="https://raw.githubusercontent.com/PisethPT/attendance/refs/heads/main/attendance/logo.png" />
                         </div>
                     </div>
                 </div>
@@ -153,9 +167,7 @@
                 <div class="d-flex justify-content-center">
                     <div class="row">
                         <div class="col-12">
-                            <p class="text-danger mt-3"
-                                style="font-size: 24px; font-family: 'Khmer OS Muol Light', 'Battambang' !important;">
-                                ស្គេនវត្តមាន</p>
+                            <p class="text-danger mt-3"​ style="font-size: 24px; font-family: 'Khmer OS Muol Light', 'Battambang' !important;">​ស្គេនវត្តមាន</p>
                         </div>
                     </div>
                 </div>
@@ -170,7 +182,7 @@
                         </div>
 
                         <button id="scanner-btn">
-                            <i style="font-size: 23px; align-self: center; color: white;" class="fa fa-square" aria-hidden="true"></i>
+                            <i style="font-size: 30px; align-self: center; color: white;" class="fa fa-square" aria-hidden="true"></i>
                         </button>
                     </div>
                 </div>
