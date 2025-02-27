@@ -103,7 +103,7 @@
             align-items: center;
         }
 
-        span{
+        h6{
             font-size: 15px;
             font-family: 'Khmer OS Battambang', 'Battambang';
         }
@@ -112,21 +112,25 @@
 </head>
 
 <body>
-  <!-- Modal -->
-  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+ <!-- Bootstrap Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
-        <div class="modal-header">
-            <h6 style="text-align: center; font-family: 'Khmer OS Battambang', 'Battambang'; color: #1861ac; font-size: 18px;">ព័ត៍មានស្គេន</h5>
+        <div class="modal-header" style="background: linear-gradient(to right, #1E3A8A, #60A5FA); color: white;">
+          <h6 class="modal-title" id="exampleModalLabel">ព័ត៍មានស្គេន</h6>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
-        <div class="modal-body">
-          <span class="text-danger" id="message-show"></span>
-          <span class="text-dark" id="request-show"></span>
+        <div class="modal-body text-center">
+          <div>
+            <img src="https://cdn-icons-png.flaticon.com/512/10317/10317900.png" alt="Error Icon" width="50">
+          </div>
+          <h5 class="mt-3 text-danger" id="message-show" style="font-family: 'Khmer OS Battambang', 'Battambang';"></h5>
+          <p class="text-dark" id="request-show" style="font-family: 'Khmer OS Battambang', 'Battambang';"></p>
         </div>
       </div>
     </div>
   </div>
+  
 
     <a href="http://192.168.2.210:100/Menu">
         <div class="container">
@@ -203,7 +207,7 @@
                             .catch((err) => {
                                 console.error('Error playing video:', err);
                                 $('#exampleModal').modal('show');
-                                $('#message-show').text('Error playing video');
+                                $('#message-show').text('Error playing video!');
                                 $('#request-show').text(' សូមព្យាយាមស្គេនម្តងទៀត។');
 
                                 scanBlock.style.display = 'none';
@@ -217,13 +221,13 @@
                         // console.error('Error accessing camera:', err);
                         if (err.name === 'NotAllowedError') {
                             console.log('Please allow access to the camera and close any overlays or bubbles from other apps.');
-                            errorMessage = 'សូម​អនុញ្ញាត​ឱ្យ​ចូល​ប្រើ​កាមេរ៉ា';
+                            errorMessage = 'សូម​អនុញ្ញាត​ឱ្យ​ចូល​ប្រើ​កាមេរ៉ា!';
                         } else if (err.name === 'NotFoundError') {
                             console.log('No camera found. Please ensure your device has a camera.');
-                            errorMessage = 'រកមិនឃើញកាមេរ៉ាទេ។ សូមប្រាកដថាឧបករណ៍របស់អ្នកមានកាមេរ៉ា។';
+                            errorMessage = 'រកមិនឃើញកាមេរ៉ាទេ។ សូមប្រាកដថាឧបករណ៍របស់អ្នកមានកាមេរ៉ា!';
                         } else {
                             console.log('Error accessing the camera. Please try again.');
-                            errorMessage = 'កំហុសក្នុងការចូលប្រើកាមេរ៉ា។';
+                            errorMessage = 'កំហុសក្នុងការចូលប្រើកាមេរ៉ា!';
                         }
 
                         $('#exampleModal').modal('show');
@@ -330,7 +334,7 @@
                             console.log("An error occurred while sending location data to the server.");
 
                             $('#exampleModal').modal('show');
-                            $('#message-show').text('កំហុសបានកើតឡើងខណៈពេលកំពុងផ្ញើទិន្នន័យទីតាំងទៅម៉ាស៊ីនមេ។');
+                            $('#message-show').text('កំហុសបានកើតឡើងខណៈពេលកំពុងផ្ញើទិន្នន័យទីតាំងទៅម៉ាស៊ីនមេ!');
                             $('#request-show').text(' សូមព្យាយាមស្គេនម្តងទៀត។');
                             startScan.disabled = false;
                             startScan.style.backgroundColor = '#1f3a93bd';
@@ -343,7 +347,7 @@
                     switch (error.code) {
                         case error.PERMISSION_DENIED:
                             console.log("User denied the request for Geolocation.");
-                            errorMessage = "អ្នកប្រើប្រាស់បានបដិសេធសំណើសុំបើកទីតាំងភូមិសាស្ត្រ។";
+                            errorMessage = "អ្នកប្រើប្រាស់បានបដិសេធសំណើសុំបើកទីតាំងភូមិសាស្ត្រ!";
                             break;
                         case error.POSITION_UNAVAILABLE:
                             console.log("Location information is unavailable.");
@@ -351,11 +355,11 @@
                             break;
                         case error.TIMEOUT:
                             console.log("The request to get user location timed out.");
-                            errorMessage = "សំណើដើម្បីទទួលបានទីតាំងអ្នកបានអស់ពេល។";
+                            errorMessage = "សំណើដើម្បីទទួលបានទីតាំងអ្នកបានអស់ពេល!";
                             break;
                         case error.UNKNOWN_ERROR:
                             console.log("An unknown error occurred.");
-                            errorMessage = "កំហុសមិនស្គាល់បានកើតឡើង។";
+                            errorMessage = "កំហុសមិនស្គាល់បានកើតឡើង!";
                             break;
                     }
 
