@@ -319,7 +319,7 @@
                             // alert(`status: ${response.statusCode}, success: ${response.success}, message: ${response.message}`);
                             if(response.statusCode !== 200){
                                 $('#exampleModal').modal('show');
-                                $('#message-show').text(errorMessage);
+                                $('#message-show').text(response.message);
                                 $('#request-show').text(' សូមព្យាយាមស្គេនម្តងទៀត។');
 
                                 startScan.disabled = false;
