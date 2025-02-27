@@ -74,14 +74,25 @@
 
         .btn-sm {
             float: right;
-            color: #fff;
-            border-color: #1861ac;
-            background-color: #1b6ec2;
             padding: .25rem .5rem;
             border-radius: .2rem;
             line-height: 1.5;
             font-size: .875rem;
             font-family: 'Khmer OS Battambang', 'Battambang';
+            outline: none;
+            border: none;
+        }
+
+        .btn-sm-primary {
+            border-color: #1861ac;
+            background-color: #1b6ec2;
+            color: #fff;
+        }
+
+        .btn-sm-dark {
+            border-color: #a7a6a6;
+            background-color: #a7a6a6;
+            color: #ffffff;
         }
 
         .contain {
@@ -91,10 +102,32 @@
             justify-content: center;
             align-items: center;
         }
+
+        span{
+            font-size: 15px;
+            font-family: 'Khmer OS Battambang', 'Battambang';
+        }
+        
     </style>
 </head>
 
 <body>
+  <!-- Modal -->
+  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+            <h6 style="text-align: center; font-family: 'Khmer OS Battambang', 'Battambang'; color: #1861ac; font-size: 18px;">ព័ត៍មានស្គេន</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <span class="text-danger" id="message-show"></span>
+          <span class="text-dark" id="request-show"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
     <a href="http://192.168.2.210:100/Menu">
         <div class="container">
             <div class="sticky-top shadow-lg rounded " style="background-color: #1f3a93">
@@ -110,10 +143,10 @@
             <div class=" bg-light shadow-lg p-3 mb-5 bg-white rounded">
                 <div class="row">
                     <div class="col-12">
-                        <a href="http://192.168.2.210:100/Menu" class="btn-sm">ត្រឡប់ក្រោយ</a>
+                        <a href="http://192.168.2.210:100/Menu" class="btn-sm btn-sm-primary">ត្រឡប់ក្រោយ</a>
                     </div>
                 </div>
-                <div class="d-flex justify-content-center ">
+                <div class="d-flex justify-content-center">
                     <div class="row">
                         <div class="col-12">
                             <p class="text-danger mt-3"
@@ -133,8 +166,7 @@
                         </div>
 
                         <button id="scanner-btn">
-                            <i style="font-size: 23px; align-self: center; color: white;" class="fa fa-square"
-                                aria-hidden="true"></i>
+                            <i style="font-size: 23px; align-self: center; color: white;" class="fa fa-square" aria-hidden="true"></i>
                         </button>
                     </div>
                 </div>
@@ -170,17 +202,38 @@
                             })
                             .catch((err) => {
                                 console.error('Error playing video:', err);
+                                $('#exampleModal').modal('show');
+                                $('#message-show').text('Error playing video');
+                                $('#request-show').text(' សូមព្យាយាមស្គេនម្តងទៀត។');
+
+                                scanBlock.style.display = 'none';
+                                startScan.style.display = 'inline';
+                                startScan.disabled = false;
+                                startScan.style.backgroundColor = '#1f3a93bd';
                             });
                     })
                     .catch((err) => {
-                        console.error('Error accessing camera:', err);
+                        let errorMessage;
+                        // console.error('Error accessing camera:', err);
                         if (err.name === 'NotAllowedError') {
-                            alert('Please allow access to the camera and close any overlays or bubbles from other apps.');
+                            console.log('Please allow access to the camera and close any overlays or bubbles from other apps.');
+                            errorMessage = 'សូម​អនុញ្ញាត​ឱ្យ​ចូល​ប្រើ​កាមេរ៉ា';
                         } else if (err.name === 'NotFoundError') {
-                            alert('No camera found. Please ensure your device has a camera.');
+                            console.log('No camera found. Please ensure your device has a camera.');
+                            errorMessage = 'រកមិនឃើញកាមេរ៉ាទេ។ សូមប្រាកដថាឧបករណ៍របស់អ្នកមានកាមេរ៉ា។';
                         } else {
-                            alert('Error accessing the camera. Please try again.');
+                            console.log('Error accessing the camera. Please try again.');
+                            errorMessage = 'កំហុសក្នុងការចូលប្រើកាមេរ៉ា។';
                         }
+
+                        $('#exampleModal').modal('show');
+                        $('#message-show').text(errorMessage);
+                        $('#request-show').text(' សូមព្យាយាមស្គេនម្តងទៀត។');
+
+                        scanBlock.style.display = 'none';
+                        startScan.style.display = 'inline';
+                        startScan.disabled = false;
+                        startScan.style.backgroundColor = '#1f3a93bd';
                     });
             }
 
@@ -191,7 +244,7 @@
                     currentStream = null;
                     videoElement.srcObject = null;
                     scanBlock.style.display = 'none';
-                    startScan.style.display = 'flex';
+                    startScan.style.display = 'inline';
                     startScan.disabled = true;
                     startScan.style.backgroundColor = 'gray';
                 }
@@ -231,6 +284,7 @@
                     });
                 } else {
                     console.log("Geolocation is not supported by this browser.");
+                    window.location.href = 'http://192.168.2.210:100/Attendance/Index';
                 }
 
                 function showPosition(position) {
@@ -255,40 +309,62 @@
                                     StartCheckInTime: "00:00:00",  
                                     EndCheckInTime: "00:00:00",
                                     IsValid: false
-                        }),
+                                }),
+
                         success: function (response) {
-                            alert(`status: ${response.statusCode}, success: ${response.success}, message: ${response.message}`);
-                            if(response.statusCode === 200){
-                                window.location.href = 'http://192.168.2.210:100/Attendance/Successfully';
-                            }
-                            else{
+                            // alert(`status: ${response.statusCode}, success: ${response.success}, message: ${response.message}`);
+                            if(response.statusCode !== 200){
+                                $('#exampleModal').modal('show');
+                                $('#message-show').text(errorMessage);
+                                $('#request-show').text(' សូមព្យាយាមស្គេនម្តងទៀត។');
+
                                 startScan.disabled = false;
                                 startScan.style.backgroundColor = '#1f3a93bd';
-                               alert(`status: ${response.statusCode}, success: ${response.success}, message: ${response.message}`);
+                            }
+                            else{
+                                window.location.href = 'http://192.168.2.210:100/Attendance/Successfully';
                             }
                         },
                         error: function (error) {
-                           alert("Error: " + JSON.stringify(error));
-                            alert("An error occurred while sending location data to the server.");
+                            console.log("Error: " + JSON.stringify(error));
+                            console.log("An error occurred while sending location data to the server.");
+
+                            $('#exampleModal').modal('show');
+                            $('#message-show').text('កំហុសបានកើតឡើងខណៈពេលកំពុងផ្ញើទិន្នន័យទីតាំងទៅម៉ាស៊ីនមេ។');
+                            $('#request-show').text(' សូមព្យាយាមស្គេនម្តងទៀត។');
+                            startScan.disabled = false;
+                            startScan.style.backgroundColor = '#1f3a93bd';
                         }
                     });
                 }
 
                 function showError(error) {
+                    let errorMessage;
                     switch (error.code) {
                         case error.PERMISSION_DENIED:
-                            alert("User denied the request for Geolocation.");
+                            console.log("User denied the request for Geolocation.");
+                            errorMessage = "អ្នកប្រើប្រាស់បានបដិសេធសំណើសុំបើកទីតាំងភូមិសាស្ត្រ។";
                             break;
                         case error.POSITION_UNAVAILABLE:
-                            alert("Location information is unavailable.");
+                            console.log("Location information is unavailable.");
+                            errorMessage = "មិនមានព័ត៌មានអំពីទីតាំងទេ។";
                             break;
                         case error.TIMEOUT:
-                            alert("The request to get user location timed out.");
+                            console.log("The request to get user location timed out.");
+                            errorMessage = "សំណើដើម្បីទទួលបានទីតាំងអ្នកបានអស់ពេល។";
                             break;
                         case error.UNKNOWN_ERROR:
-                            alert("An unknown error occurred.");
+                            console.log("An unknown error occurred.");
+                            errorMessage = "កំហុសមិនស្គាល់បានកើតឡើង។";
                             break;
                     }
+
+                    $('#exampleModal').modal('show');
+                    $('#message-show').text(errorMessage);
+                    $('#request-show').text(' សូមព្យាយាមស្គេនម្តងទៀត។');
+
+                    startScan.disabled = false;
+                    startScan.style.backgroundColor = '#1f3a93bd';
                 }
             }
         });
