@@ -220,7 +220,6 @@
                                 console.error('Error playing video:', err);
                                 $('#exampleModal').modal('show');
                                 $('#message-show').text('Error playing video!');
-                                $('#request-show').text('សូមព្យាយាមស្គេនម្តងទៀត។');
 
                                 scanBlock.style.display = 'none';
                                 startScan.style.display = 'inline';
@@ -235,18 +234,17 @@
                         // console.error('Error accessing camera:', err);
                         if (err.name === 'NotAllowedError') {
                             console.log('Please allow access to the camera and close any overlays or bubbles from other apps.');
-                            errorMessage = 'សូម​អនុញ្ញាត​ឱ្យ​ចូល​ប្រើ​កាមេរ៉ា!';
+                            errorMessage = 'សូម​អនុញ្ញាត​ឱ្យ​ចូល​ប្រើ​កាមេរ៉ា។';
                         } else if (err.name === 'NotFoundError') {
                             console.log('No camera found. Please ensure your device has a camera.');
-                            errorMessage = 'រកមិនឃើញកាមេរ៉ាទេ។ សូមប្រាកដថាឧបករណ៍របស់អ្នកមានកាមេរ៉ា!';
+                            errorMessage = 'រកមិនឃើញកាមេរ៉ាទេ។ សូមប្រាកដថាឧបករណ៍របស់អ្នកមានកាមេរ៉ា។';
                         } else {
                             console.log('Error accessing the camera. Please try again.');
-                            errorMessage = 'កំហុសក្នុងការចូលប្រើកាមេរ៉ា!';
+                            errorMessage = 'កំហុសក្នុងការចូលប្រើកាមេរ៉ា។';
                         }
 
                         $('#exampleModal').modal('show');
                         $('#message-show').text(errorMessage);
-                        $('#request-show').text('សូមព្យាយាមស្គេនម្តងទៀត។');
 
                         scanBlock.style.display = 'none';
                         startScan.style.display = 'inline';
@@ -337,7 +335,6 @@
                             if (response.statusCode !== 200) {
                                 $('#exampleModal').modal('show');
                                 $('#message-show').text(response.message);
-                                $('#request-show').text(response.requstMessage);
 
                                 startScan.disabled = false;
                                 startScan.style.animation = 'growShrink 2s infinite';
@@ -352,8 +349,7 @@
                             console.log("An error occurred while sending location data to the server.");
 
                             $('#exampleModal').modal('show');
-                            $('#message-show').text('កំហុសបានកើតឡើងខណៈពេលកំពុងផ្ញើទិន្នន័យទីតាំងទៅម៉ាស៊ីនមេ!');
-                            $('#request-show').text('សូមព្យាយាមស្គេនម្តងទៀត។');
+                            $('#message-show').text(JSON.stringify(error));
                             startScan.disabled = false;
                             startScan.style.animation = 'growShrink 2s infinite';
                             startScan.style.backgroundColor = '#1f3a93bd';
@@ -366,7 +362,7 @@
                     switch (error.code) {
                         case error.PERMISSION_DENIED:
                             console.log("User denied the request for Geolocation.");
-                            errorMessage = "អ្នកប្រើប្រាស់បានបដិសេធសំណើសុំបើកទីតាំងភូមិសាស្ត្រ!";
+                            errorMessage = "អ្នកប្រើប្រាស់បានបដិសេធសំណើសុំបើកទីតាំង។";
                             break;
                         case error.POSITION_UNAVAILABLE:
                             console.log("Location information is unavailable.");
@@ -374,17 +370,16 @@
                             break;
                         case error.TIMEOUT:
                             console.log("The request to get user location timed out.");
-                            errorMessage = "សំណើដើម្បីទទួលបានទីតាំងអ្នកបានអស់ពេល!";
+                            errorMessage = "សំណើដើម្បីទទួលបានទីតាំងអ្នកបានអស់ពេល។";
                             break;
                         case error.UNKNOWN_ERROR:
                             console.log("An unknown error occurred.");
-                            errorMessage = "កំហុសមិនស្គាល់បានកើតឡើង!";
+                            errorMessage = "កំហុសមិនស្គាល់បានកើតឡើង។";
                             break;
                     }
 
                     $('#exampleModal').modal('show');
                     $('#message-show').text(errorMessage);
-                    $('#request-show').text('សូមព្យាយាមស្គេនម្តងទៀត។');
 
                     startScan.disabled = false;
                     startScan.style.animation = 'growShrink 2s infinite';
