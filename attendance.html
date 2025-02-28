@@ -112,7 +112,7 @@
 
         .contain {
             display: flex;
-            height: 65vh;
+            height: 75vh;
             flex-direction: column;
             justify-content: center;
             align-items: center;
@@ -127,9 +127,8 @@
 </head>
 
 <body>
-
  <!-- Bootstrap Modal -->
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header" style="background: linear-gradient(to right, #1f3a93, #1f3a93); color: white;">
@@ -149,7 +148,7 @@
 
     <a href="http://192.168.2.210:100/Menu">
         <div class="container sticky-top shadow-lg rounded" style="background-color: #1f3a93">
-            <div class="d-flex justify-content-center ">
+            <div class="d-flex justify-content-center mt-4">
                 <div class="row">
                     <div class="col-9">
                         <img src="https://raw.githubusercontent.com/PisethPT/attendance/refs/heads/main/attendance/logo.png" />
@@ -158,6 +157,7 @@
             </div>
         </div>
     </a>
+
     <div class="bg-light shadow-lg  mb-5 bg-white rounded container">
         <div class="row">
             <div class="col-12 pt-3" style="display: flex; justify-content: flex-end; ">
@@ -167,14 +167,12 @@
         <div class="d-flex justify-content-center">
             <div class="row">
                 <div class="col-12">
-                    <p class="text-danger mt-3" ​
-                        style="font-size: 24px; font-family: 'Khmer OS Muol Light', 'Battambang' !important;">​ស្គេនវត្តមាន
-                    </p>
+                    <p class="text-danger mt-3"
+                        style="font-size: 24px; font-family: 'Khmer OS Muol Light', 'Battambang' !important;">​ស្គេនវត្តមាន</p>
                 </div>
             </div>
         </div>
-        <div style="display: flex; flex-direction: column; justify-content:center; margin-bottom: 20px;">
-            <div id="display"></div>
+        <div style="display: flex; flex-direction: column; justify-content:center;">
             <!-- Scan attendance -->
             <div class="contain">
                 <div id="scan-block">
@@ -221,7 +219,7 @@
                                 console.error('Error playing video:', err);
                                 $('#exampleModal').modal('show');
                                 $('#message-show').text('Error playing video!');
-                                $('#request-show').text(' សូមព្យាយាមស្គេនម្តងទៀត។');
+                                $('#request-show').text('សូមព្យាយាមស្គេនម្តងទៀត។');
 
                                 scanBlock.style.display = 'none';
                                 startScan.style.display = 'inline';
@@ -247,7 +245,7 @@
 
                         $('#exampleModal').modal('show');
                         $('#message-show').text(errorMessage);
-                        $('#request-show').text(' សូមព្យាយាមស្គេនម្តងទៀត។');
+                        $('#request-show').text('សូមព្យាយាមស្គេនម្តងទៀត។');
 
                         scanBlock.style.display = 'none';
                         startScan.style.display = 'inline';
@@ -338,7 +336,7 @@
                             if(response.statusCode !== 200){
                                 $('#exampleModal').modal('show');
                                 $('#message-show').text(response.message);
-                                $('#request-show').text(' សូមព្យាយាមស្គេនម្តងទៀត។');
+                                $('#request-show').text(response.requstMessage);
 
                                 startScan.disabled = false;
                                 startScan.style.animation = 'growShrink 2s infinite';
@@ -354,7 +352,7 @@
 
                             $('#exampleModal').modal('show');
                             $('#message-show').text('កំហុសបានកើតឡើងខណៈពេលកំពុងផ្ញើទិន្នន័យទីតាំងទៅម៉ាស៊ីនមេ!');
-                            $('#request-show').text(' សូមព្យាយាមស្គេនម្តងទៀត។');
+                            $('#request-show').text('សូមព្យាយាមស្គេនម្តងទៀត។');
                             startScan.disabled = false;
                             startScan.style.animation = 'growShrink 2s infinite';
                             startScan.style.backgroundColor = '#1f3a93bd';
@@ -385,7 +383,7 @@
 
                     $('#exampleModal').modal('show');
                     $('#message-show').text(errorMessage);
-                    $('#request-show').text(' សូមព្យាយាមស្គេនម្តងទៀត។');
+                    $('#request-show').text('សូមព្យាយាមស្គេនម្តងទៀត។');
 
                     startScan.disabled = false;
                     startScan.style.animation = 'growShrink 2s infinite';
