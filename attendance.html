@@ -23,10 +23,10 @@
 
         // If user is not authenticated, redirect to login page
         if (!window.atob(studentValue).includes("/")) {
-            window.location.href = 'http://192.168.2.210:100/Menu';
+            window.location.href = 'https://manvannetsystem.biz:8989/Menu';
         }
         else if (!studentValue || window.atob(studentValue).split("/")[1] !== 'iu.kh.com') {
-            window.location.href = 'http://192.168.2.210:100/Menu';
+            window.location.href = 'https://manvannetsystem.biz:8989/Menu';
         }
 
         const studentid = window.atob(studentValue).replace("/iu.kh.com", "");
@@ -162,7 +162,7 @@
     <div class="container">
         <div class="row">
             <div class="col-12 pt-3" style="display: flex; justify-content: flex-end; ">
-                <a href="http://192.168.2.210:100/Menu" class="btn-sm btn-sm-primary">ត្រឡប់ក្រោយ</a>
+                <a href="https://manvannetsystem.biz:8989/Menu" class="btn-sm btn-sm-primary">ត្រឡប់ក្រោយ</a>
             </div>
         </div>
         <div class="d-flex justify-content-center">
@@ -305,7 +305,7 @@
                     });
                 } else {
                     console.log("Geolocation is not supported by this browser.");
-                    window.location.href = 'http://192.168.2.210:100/Attendance/Index';
+                    window.location.href = 'https://manvannetsystem.biz:8989/Attendance/Index';
                 }
 
                 function showPosition(position) {
@@ -344,7 +344,7 @@
                                 startScan.style.backgroundColor = '#1f3a93bd';
                             }
                             else {
-                                window.location.href = 'http://192.168.2.210:100/Attendance/Successfully';
+                                window.location.href = 'https://manvannetsystem.biz:8989/Attendance/Successfully';
                             }
                         },
                         error: function (error) {
