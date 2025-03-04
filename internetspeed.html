@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detect Network Speed using JavaScript</title>
+    <style>
+        #speedDisplay {
+            font-size: 20px;
+            font-family: Arial, sans-serif;
+            padding: 10px;
+            background-color: #f4f4f4;
+            margin-top: 20px;
+            border-radius: 5px;
+        }
+
+        .speedCategory {
+            font-weight: bold;
+        }
+
+        .poor {
+            color: red;
+        }
+
+        .middle {
+            color: orange;
+        }
+
+        .faster {
+            color: green;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Network Speed</h1>
+    <div id="speedDisplay">
+        <p>Loading speed...</p>
+    </div>
+
+    <script type="text/javascript">
+        let userImageLink = "https://media.geeksforgeeks.org/wp-content/cdn-uploads/20200714180638/CIP_Launch-banner.png";
+
+        // The size of the image in bytes (this value needs to be correct for accurate speed estimation)
+        let downloadSize = 5616998; // 5.6MB
+
+        function checkSpeed() {
+            let time_start, end_time;
+
+            // Create a new Image object to initiate the download
+            let downloadImgSrc = new Image();
+
+            // Start the download and measure time
+            downloadImgSrc.onload = function () {
+                end_time = new Date().getTime();
+                calculateSpeed();
+            };
+
+            time_start = new Date().getTime();
+            downloadImgSrc.src = userImageLink + "?cache_bust=" + time_start; // Adding a cache-busting query parameter
+
+            function calculateSpeed() {
+                let timeDuration = (end_time - time_start) / 1000; // Time in seconds
+                let loadedBits = downloadSize * 8; // Convert bytes to bits
+
+                // Calculate speed in bits per second (bps)
+                let bps = (loadedBits / timeDuration).toFixed(2);
+                let speedInKbps = (bps / 1024).toFixed(2); // Convert to Kbps
+                let speedInMbps = (speedInKbps / 1024).toFixed(2); // Convert to Mbps
+
+                // Classify speed
+                let speedCategory = classifySpeed(speedInMbps);
+
+                // Display speed and category on the webpage
+                document.getElementById("speedDisplay").innerHTML = `
+                    <p>Your internet connection speed is:</p>
+                    <ul>
+                        <li>${bps} bps</li>
+                        <li>${speedInKbps} kbps</li>
+                        <li>${speedInMbps} Mbps</li>
+                    </ul>
+                    <p class="speedCategory ${speedCategory.class}">Speed : ${speedCategory.label}</p>
+                `;
+            }
+        }
+
+        // Function to classify the speed based on Mbps
+        function classifySpeed(speed) {
+            let speedNum = parseFloat(speed);
+
+            if (speedNum < 1) {
+                return { label: "Poor", class: "poor" };
+            } else if (speedNum >= 1 && speedNum <= 10) {
+                return { label: "Middle", class: "middle" };
+            } else {
+                return { label: "Faster", class: "faster" };
+            }
+        }
+
+        // Call the function every 1 seconds to measure speed
+        setInterval(checkSpeed, 1000); // Check every 1 seconds
+
+        // Initially check the speed
+        checkSpeed();
+    </script>
+</body>
+
+</html>
